@@ -1,0 +1,10 @@
+- name: Configure ssh to accept new host keys for the first time
+  template:
+    src: templates/config.j2
+    dest: "{{ ssh_directory_path }}/config"
+    owner: "{{ remote_user }}"
+    group: "{{ remote_user }}"
+    mode: 0644
+# FIXME: Does not work, permission denied error
+# - name: Make sure that the ~/easy-rsa/pki/ca.crt is in the openvpn server
+#   shell: scp {{ easy_rsa_directory_path }}/pki/ca.crt {{ openvpn_server_scp_address }}:/usr/local/share/ca-certificates/

@@ -1,0 +1,12 @@
+[companyNameOpenvpn]
+"{{ openvpn_server_address }}" ansible_user=ubuntu ansible_private_key_file="~/.ssh/id_rsa.pub"
+[companyNameCertificateAuthority]
+"{{ ca_server_address }}" ansible_user=ubuntu ansible_private_key_file="~/.ssh/id_rsa.pub"
+
+
+[companyName:children]
+companyNameOpenvpn
+companyNameCertificateAuthority
+
+[companyName:vars]
+ca_server_public_key_path=/tmp/id_rsa.openvpn.pub

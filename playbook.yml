@@ -1,0 +1,52 @@
+- hosts: companyNameCertificateAuthority
+  gather_facts: yes
+  roles:
+    - aptitude
+    - keychain
+    - easy-rsa
+    - pki-directory
+    - certificate-authority-pki
+    - certificate-authority-ssh-keygen
+  vars:
+    # FIXME: <Duplicated-variable>
+    easy_rsa_directory_path: "{{ ansible_env.HOME }}/easy-rsa"
+    ssh_directory_path: "{{ ansible_env.HOME }}/.ssh"
+    # FIXME: </Duplicated-variable>
+    ca_country: "{{ lookup('env', 'ca_country') }}"
+    ca_province: "{{ lookup('env', 'ca_province') }}"
+    ca_city_name: "{{ lookup('env', 'ca_city_name') }}"
+    ca_company_name: "{{ lookup('env', 'ca_company_name') }}"
+    ca_email: "{{ lookup('env', 'ca_email') }}"
+    ca_company_department: "{{ lookup('env', 'ca_company_department') }}"
+
+- hosts: companyNameOpenvpn
+  gather_facts: yes
+  roles:
+    - aptitude
+    - openvpn
+    - pki-directory
+    - openvpn-pki
+    - authorized-keys-ca-server
+  vars:
+    # FIXME: <Duplicated-variable>
+    easy_rsa_directory_path: "{{ ansible_env.HOME }}/easy-rsa"
+    ssh_directory_path: "{{ ansible_env.HOME }}/.ssh"
+    # FIXME: </Duplicated-variable>
+
+- hosts: companyNameCertificateAuthority
+  gather_facts: yes
+  roles:
+    - certificate-authority-server-sshkey
+    - copy-ca-crt-to-openvpn-server
+  vars:
+    openvpn_server_scp_address: "{{ remote_user }}@{{ openvpn_server_address }}"
+    # FIXME: <Duplicated-variable>
+    ssh_directory_path: "{{ ansible_env.HOME }}/.ssh"
+    easy_rsa_directory_path: "{{ ansible_env.HOME }}/easy-rsa"
+    # FIXME: </Duplicated-variable>
+
+# FIXME: Is this the only way to execute a specific role for another host after another host?
+- hosts: companyNameOpenvpn
+  gather_facts: yes
+  roles:
+    - update-ca-certificate

@@ -1,0 +1,29 @@
+- name: Customize CA variable configuration
+  lineinfile:
+    dest: "{{ easy_rsa_directory_path }}/vars"
+    regexp: "^{{ item.property | regex_escape() }}="
+    line: "{{ item.property }} {{ item.value }}"
+  with_items:
+    - { property: "set_var EASYRSA_REQ_COUNTRY", value: '"{{ ca_country }}"' }
+    - { property: "set_var EASYRSA_REQ_PROVINCE", value: '"{{ ca_province }}"' }
+    - { property: "set_var EASYRSA_REQ_CITY", value: '"{{ ca_city_name }}"' }
+    - { property: "set_var EASYRSA_REQ_ORG", value: '"{{ ca_company_name }}"' }
+    - { property: "set_var EASYRSA_REQ_EMAIL", value: '"{{ ca_email }}"' }
+    - {
+        property: "set_var EASYRSA_REQ_OU",
+        value: '"{{ ca_company_department }}"',
+      }
+    - { property: "set_var EASYRSA_ALGO", value: '"ec"' }
+    - { property: "set_var EASYRSA_DIGEST", value: '"sha512"' }
+
+- name: Build the certificate authority
+  shell: ./easyrsa init-pki
+  args:
+    chdir: "{{ easy_rsa_directory_path }}/"
+    executable: /bin/bash
+
+- name: Ensure that public & private key pair exists for CA
+  shell: ./easyrsa --batch --vars={{ easy_rsa_directory_path }}/vars build-ca nopass
+  args:
+    chdir: "{{ easy_rsa_directory_path }}"
+    executable: /bin/bash

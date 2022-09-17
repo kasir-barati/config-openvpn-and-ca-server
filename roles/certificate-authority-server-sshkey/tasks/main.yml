@@ -1,0 +1,11 @@
+- name: Make the private key permanent with ssh-add on Ubuntu
+  become: yes
+  blockinfile:
+    dest: /etc/bash.bashrc
+    block: |
+      # Make permanently private key with ssh-add on Ubuntu
+      /usr/bin/keychain {{ ssh_directory_path }}/id_rsa.openvpn
+      source $HOME/.keychain/$HOSTNAME-sh
+    marker: "# {mark} - github private ssh key"
+    insertafter: EOF
+    create: no

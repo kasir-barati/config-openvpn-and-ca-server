@@ -1,0 +1,29 @@
+- name: Ensure the authorized_keys_ca_server exists
+  copy:
+    src: /tmp/id_rsa.openvpn.pub
+    dest: "{{ ssh_directory_path }}/authorized_keys_ca_server"
+    group: "{{ remote_user }}"
+    owner: "{{ remote_user }}"
+    mode: 0640
+    force: yes
+
+- name: Make sure that AuthorizedKeysFile is uncommented
+  replace:
+    path: "/etc/ssh/sshd_config"
+    regexp: "^#(.*AuthorizedKeysFile.*)"
+    replace: "\1"
+
+- name: Make sure that /etc/ssh/sshd_config contains authorized_keys_ca_server
+  lineinfile:
+    path: "/etc/ssh/sshd_config"
+    backrefs: true
+    regexp: "^(.*AuthorizedKeysFile.*)$"
+    line: "\1 ~/.ssh/authorized_keys_ca_server"
+
+- name: Make sure that the .ssh directory permission is 700
+  file:
+    path: "{{ ssh_directory_path }}/"
+    mode: 0700
+    group: "{{ remote_user }}"
+    owner: "{{ remote_user }}"
+    state: directory

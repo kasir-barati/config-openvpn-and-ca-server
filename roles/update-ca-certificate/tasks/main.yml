@@ -1,0 +1,8 @@
+# - name: Move the ca.crt to the /usr/local/share/ca-certificates/
+#   copy:
+#     src: /tmp/ca.crt
+#     path
+
+- name: Update ca certificates
+  become: yes
+  shell: update-ca-certificates

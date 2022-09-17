@@ -1,0 +1,14 @@
+- name: Upgrade & update apt packages
+  become: yes
+  apt:
+    update_cache: yes
+    upgrade: yes
+
+- name: Make sure that aptitude is installed on the server
+  become: yes
+  apt:
+    name: aptitude
+    state: present
+    update_cache: yes
+  tags:
+    - install-aptitude

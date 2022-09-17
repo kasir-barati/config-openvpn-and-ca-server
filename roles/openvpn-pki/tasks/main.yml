@@ -1,0 +1,17 @@
+- name: Create a PKI for openvpn
+  lineinfile:
+    dest: "{{ easy_rsa_directory_path }}/vars"
+    regexp: "^{{ item.property | regex_escape() }}="
+    line: "{{ item.property }} {{ item.value }}"
+  with_items:
+    - { property: "set_var EASYRSA_ALGO", value: '"ec"' }
+    - { property: "set_var EASYRSA_DIGEST", value: '"sha512"' }
+
+- name: Build the certificate authority
+  shell: ./easyrsa init-pki
+  args:
+    chdir: "{{ easy_rsa_directory_path }}/"
+    executable: /bin/bash
+# ./easyrsa gen-req server nopass
+# ./easyrsa sign-req server server
+# openssl dhparam -out dh2048.pem 2048

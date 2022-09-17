@@ -1,0 +1,8 @@
+- name: Make sure that openvpn is installed
+  become: yes
+  apt:
+    name: openvpn
+    state: present
+    update_cache: yes
+  tags:
+    - install-openvpn

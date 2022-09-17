@@ -1,0 +1,6 @@
+- name: Make sure that easy-rsa is installed
+  become: yes
+  apt:
+    name: easy-rsa
+    state: present
+    update_cache: yes

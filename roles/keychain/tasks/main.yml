@@ -1,0 +1,8 @@
+- name: Install keychain
+  become: yes
+  apt:
+    name: keychain
+    state: present
+    update_cache: true
+  tags:
+    - install-keychain
